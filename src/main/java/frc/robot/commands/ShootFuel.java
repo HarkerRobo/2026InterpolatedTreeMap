@@ -1,30 +1,25 @@
-
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.simulation.SimulationController;
 
-public class SetShotPower extends Command
+public class ShootFuel extends Command
 {
-    double power;
-    public SetShotPower(double power)
+    public ShootFuel()
     {
-        addRequirements(Shooter.getInstance());
-        this.power = power;
     }
 
     @Override
     public void initialize()
     {
-        Shooter.getInstance().shotPower = power;
+        SimulationController.getInstance().addBall();
     }
 
     @Override
     public void execute()
     {
-
     }
-
+    
     @Override
     public boolean isFinished()
     {
@@ -34,7 +29,5 @@ public class SetShotPower extends Command
     @Override
     public void end(boolean interrupted)
     {
-
     }
-
 }

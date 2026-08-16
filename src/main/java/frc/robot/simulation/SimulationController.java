@@ -16,8 +16,10 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.MathUtil;
 
-public class SimulationDictator
+public class SimulationController
 {
+    private static SimulationController instance;
+
     private boolean simulatingBall = false;
 
     // this could be done more concisely but far less memory efficiently through Translation3ds
@@ -34,7 +36,7 @@ public class SimulationDictator
 
     private double lastTime;
 
-    public SimulationDictator ()
+    private SimulationController ()
     {
         lastTime = Milliseconds.of(System.currentTimeMillis()).in(Seconds);
     }
@@ -102,6 +104,21 @@ public class SimulationDictator
                 fuelsMissed += 1;
             }
         }
-        
+    }
+
+    public int getFuelsScored()
+    {
+        return fuelsScored;
+    }
+
+    public int getFuelsMissed()
+    {
+        return fuelsMissed;
+    }
+
+    public static SimulationController getInstance()
+    {
+        if (instance == null) instance = new SimulationController();
+        return instance;
     }
 }

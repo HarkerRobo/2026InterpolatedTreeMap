@@ -1,23 +1,25 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Rotations;
+
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hood;
 
 public class SetHoodAngle extends Command
 {
     double angle;
-    public SetHoodAngle(double angle)
+    public SetHoodAngle(Angle angle)
     {
-        this.angle = angle;
+        this.angle = angle.in(Rotations);
         addRequirements(Hood.getInstance());
-        Hood.getInstance().hoodAngle = angle;
     }
 
     @Override
     public void initialize()
     {
-
+        Hood.getInstance().setAngle(Rotations.of(angle));
     }
 
     @Override

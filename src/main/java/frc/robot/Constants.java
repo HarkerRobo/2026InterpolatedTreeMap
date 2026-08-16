@@ -25,7 +25,7 @@ public class Constants
         public static final double Kv = 0.3;
         public static final double Ka = 0.1;
 
-        public static final double Kva = 0.005;
+        public static final double Kva = 0.05;
 
         public static final double HEIGHT = 0.30;
     }
@@ -72,4 +72,8 @@ public class Constants
     
         public static final double SHOOTING_HEIGHT_FROM_GROUND = 0.5; // meters
     }
+
+    public static final double MAX_DRIVE_VOLTAGE = 2.0;
+    public static final double MAX_ROTATE_VOLTAGE = 1.0;
+    public static final double DEADBAND = 0.1;
 }

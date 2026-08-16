@@ -18,7 +18,7 @@ public class Shooter extends SubsystemBase
     {
     }
     
-    public void setAngle(LinearVelocity velocity)
+    public void setVelocity(LinearVelocity velocity)
     {
         this.velocity = MathUtil.clamp(velocity.in(MetersPerSecond), 
             Constants.Shooter.MINIMUM_SPEED.in(MetersPerSecond),
