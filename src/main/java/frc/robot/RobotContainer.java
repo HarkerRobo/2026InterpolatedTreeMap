@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AimAndShoot;
 import frc.robot.commands.SetHoodAngle;
-import frc.robot.commands.ShootFuel;
 import frc.robot.commands.SwerveManual;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
@@ -55,8 +54,7 @@ public class RobotContainer
 
     private void configureBindings() 
     {
-        driver.button(3).onTrue(new ShootFuel());
-        driver.button(4).onTrue(new AimAndShoot());
+        driver.button(1).onTrue(new AimAndShoot());
     }
 
 

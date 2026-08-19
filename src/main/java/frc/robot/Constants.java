@@ -66,7 +66,7 @@ public class Constants
         public static final Rectangle2d HUB_CONTENTS = new Rectangle2d(new Pose2d(new Translation2d(4.574794, 4.059936), new Rotation2d()), 1.1938, 1.1938);
 
         public static final double BALL_MASS = (MAX_FUEL_MASS + MIN_FUEL_MASS) / 2.0;
-        public static final double G = 9.81;
+        public static final double G = -9.81;
 
         public static final double HUB_INTAKE_HEIGHT = 1.8288; // meters
     
@@ -76,4 +76,6 @@ public class Constants
     public static final double MAX_DRIVE_VOLTAGE = 2.0;
     public static final double MAX_ROTATE_VOLTAGE = 1.0;
     public static final double DEADBAND = 0.1;
+
+    public static final boolean DATA_COLLECTION_MODE = true;
 }
