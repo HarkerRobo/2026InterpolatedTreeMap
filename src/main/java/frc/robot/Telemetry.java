@@ -7,10 +7,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.simulation.SimulationController;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
@@ -35,8 +39,14 @@ public class Telemetry
     private static IntegerPublisher fuelsScored = telemetryTable.getIntegerTopic("Fuels Scored").publish();
     private static IntegerPublisher fuelsMissed = telemetryTable.getIntegerTopic("Fuels Missed").publish();
 
+    private static NetworkTable manualTable = telemetryTable.getSubTable("Manual Shot");
+    private static NetworkTableEntry manualSpeedEntry = manualTable.getEntry("Speed (m per s)");
+    private static NetworkTableEntry manualAngleEntry = manualTable.getEntry("Angle (deg)");
+
     public static void init()
     {
+        manualSpeedEntry.setDefaultDouble(Constants.Shooter.INITIAL_SPEED.in(MetersPerSecond));
+        manualAngleEntry.setDefaultDouble(Constants.Hood.INITIAL_ANGLE.in(Degrees));
     }
 
     public static NetworkTable getTable() 
@@ -46,6 +56,12 @@ public class Telemetry
 
     public static void update() 
     {
+        LinearVelocity manualSpeedValue = MetersPerSecond.of(manualSpeedEntry.getDouble(Constants.Shooter.INITIAL_SPEED.in(MetersPerSecond)));
+        Angle manualAngleValue = Degrees.of(manualAngleEntry.getDouble(Constants.Hood.INITIAL_ANGLE.in(Degrees)));
+
+        Shooter.getInstance().setVelocity(manualSpeedValue);
+        Hood.getInstance().setAngle(manualAngleValue);
+
         pose.set(Drivetrain.getInstance().getPose());
         voltage.set(Drivetrain.getInstance().getVoltage());
         velocity.set(Drivetrain.getInstance().getVelocity());

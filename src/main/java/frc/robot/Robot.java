@@ -13,15 +13,17 @@ public class Robot extends TimedRobot
 {
     public Robot() 
     {
+        Telemetry.init();
         RobotContainer.getInstance();
     }
 
     @Override
     public void robotPeriodic() 
     {
+        Telemetry.update();
         CommandScheduler.getInstance().run();
         SimulationController.getInstance().periodic();
-        Telemetry.update();
+
     }
 
     @Override

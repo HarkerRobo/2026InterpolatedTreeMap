@@ -7,10 +7,13 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import java.nio.file.attribute.DosFileAttributeView;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
@@ -33,6 +36,10 @@ public class SimulationController
 
     private int fuelsScored = 0;
     private int fuelsMissed = 0;
+
+    private double shotDistance;
+    private double shotSpeed;
+    private double shotAngleRotations;
 
     private double lastTime;
 
@@ -58,6 +65,8 @@ public class SimulationController
         positionZ += velocityZ * timeElapsed;
     }
 
+
+
     public void addBall()
     {
         simulatingBall = true;
@@ -75,6 +84,12 @@ public class SimulationController
         velocityX = shotVector.getX();
         velocityY = shotVector.getY();
         velocityZ = shotVector.getZ();
+
+        Translation2d hubCenter = Constants.Simulation.HUB_CONTENTS.getCenter().getTranslation();
+
+        shotDistance = drivetrainPose.getTranslation().getDistance(hubCenter);
+        shotSpeed = shotVelocity;
+        shotAngleRotations = Hood.getInstance().getAngle().in(Rotations);
     }
 
     public void periodic()
@@ -93,6 +108,9 @@ public class SimulationController
                 if (Math.abs(positionZ - Constants.Simulation.HUB_INTAKE_HEIGHT) < Constants.Simulation.FUEL_DIAMETER / 2.0) // fuel lands in the hub
                 {
                     fuelsScored += 1;
+
+                    RobotContainer.getInstance().shotMap.put(shotDistance, new Pair<>(MetersPerSecond.of(shotSpeed), Rotations.of(shotAngleRotations)));
+                    RobotContainer.getInstance().shotMapEntries += 1;
                 }
                 else // fuel undershoots and hits the hub
                 {
@@ -115,6 +133,8 @@ public class SimulationController
     {
         return fuelsMissed;
     }
+
+
 
     public static SimulationController getInstance()
     {
