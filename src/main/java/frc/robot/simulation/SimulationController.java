@@ -2,6 +2,7 @@ package frc.robot.simulation;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Milliseconds;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -9,6 +10,7 @@ import java.nio.file.attribute.DosFileAttributeView;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -37,9 +39,6 @@ public class SimulationController
     private int fuelsScored = 0;
     private int fuelsMissed = 0;
 
-    private double shotDistance;
-    private double shotSpeed;
-    private double shotAngleRotations;
 
     private double lastTime;
 
@@ -78,18 +77,16 @@ public class SimulationController
         positionZ = Constants.Simulation.SHOOTING_HEIGHT_FROM_GROUND;
 
         double shotVelocity = Shooter.getInstance().getVelocity().in(MetersPerSecond);
-        Rotation3d shotDirection = new Rotation3d(0.0, Hood.getInstance().getAngle().in(Rotations), drivetrainPose.getRotation().getRotations());
-        Translation3d shotVector = new Translation3d(shotVelocity, shotDirection);
+        double pitch = Hood.getInstance().getAngle().in(Radians);
+        double yaw = drivetrainPose.getRotation().getRadians();
 
-        velocityX = shotVector.getX();
-        velocityY = shotVector.getY();
-        velocityZ = shotVector.getZ();
+        double xyprojection = shotVelocity * Math.cos(pitch);
+        
+        velocityX = xyprojection * Math.cos(yaw);
+        velocityY = xyprojection * Math.sin(yaw);
+        velocityZ = shotVelocity * Math.sin(pitch);
 
-        Translation2d hubCenter = Constants.Simulation.HUB_CONTENTS.getCenter().getTranslation();
-
-        shotDistance = drivetrainPose.getTranslation().getDistance(hubCenter);
-        shotSpeed = shotVelocity;
-        shotAngleRotations = Hood.getInstance().getAngle().in(Rotations);
+        System.out.printf("Velocity: (%f;%f;%f)", velocityX, velocityY, velocityZ);
     }
 
     public void periodic()
@@ -108,9 +105,6 @@ public class SimulationController
                 if (Math.abs(positionZ - Constants.Simulation.HUB_INTAKE_HEIGHT) < Constants.Simulation.FUEL_DIAMETER / 2.0) // fuel lands in the hub
                 {
                     fuelsScored += 1;
-
-                    RobotContainer.getInstance().shotMap.put(shotDistance, new Pair<>(MetersPerSecond.of(shotSpeed), Rotations.of(shotAngleRotations)));
-                    RobotContainer.getInstance().shotMapEntries += 1;
                 }
                 else // fuel undershoots and hits the hub
                 {
@@ -119,6 +113,7 @@ public class SimulationController
             }
             else if (positionZ < Constants.Simulation.FUEL_DIAMETER / 2.0) // fuel hits the ground
             {
+                simulatingBall = false;
                 fuelsMissed += 1;
             }
         }

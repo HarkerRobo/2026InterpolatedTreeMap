@@ -32,9 +32,10 @@ public class Telemetry
     private static DoublePublisher angularVoltage = drivetrainTable.getDoubleTopic("Angular Voltage").publish();
     private static DoublePublisher angularVelocity = drivetrainTable.getDoubleTopic("Angular Velocity").publish();
     private static DoublePublisher time = drivetrainTable.getDoubleTopic("Time").publish();
+    private static DoublePublisher distanceToHub = telemetryTable.getDoubleTopic("Distance To Hub (m)").publish();
 
     private static DoublePublisher hoodAngle = telemetryTable.getDoubleTopic("Hood Angle (°)").publish();
-    private static DoublePublisher shooterVelocity = telemetryTable.getDoubleTopic("Shooter Velocity (°)").publish();
+    private static DoublePublisher shooterVelocity = telemetryTable.getDoubleTopic("Shooter Velocity (m/s)").publish();
     private static StructPublisher<Pose3d> fuelPose = telemetryTable.getStructTopic("Fuel Pose", Pose3d.struct).publish();
     private static IntegerPublisher fuelsScored = telemetryTable.getIntegerTopic("Fuels Scored").publish();
     private static IntegerPublisher fuelsMissed = telemetryTable.getIntegerTopic("Fuels Missed").publish();
@@ -54,20 +55,26 @@ public class Telemetry
         return telemetryTable;
     }
 
+    public static LinearVelocity getManualSpeedValue()
+    {
+        return MetersPerSecond.of(manualSpeedEntry.getDouble(Constants.Shooter.INITIAL_SPEED.in(MetersPerSecond)));
+    }
+
+    public static Angle getManualAngleValue()
+    {
+        return Degrees.of(manualAngleEntry.getDouble(Constants.Hood.INITIAL_ANGLE.in(Degrees)));
+    }
+
     public static void update() 
     {
-        LinearVelocity manualSpeedValue = MetersPerSecond.of(manualSpeedEntry.getDouble(Constants.Shooter.INITIAL_SPEED.in(MetersPerSecond)));
-        Angle manualAngleValue = Degrees.of(manualAngleEntry.getDouble(Constants.Hood.INITIAL_ANGLE.in(Degrees)));
-
-        Shooter.getInstance().setVelocity(manualSpeedValue);
-        Hood.getInstance().setAngle(manualAngleValue);
-
         pose.set(Drivetrain.getInstance().getPose());
         voltage.set(Drivetrain.getInstance().getVoltage());
         velocity.set(Drivetrain.getInstance().getVelocity());
         angularVoltage.set(Drivetrain.getInstance().getAngularVoltage());
         angularVelocity.set(Drivetrain.getInstance().getAngularVelocity());
         time.set(Drivetrain.getInstance().getTime());
+        double distance = Drivetrain.getInstance().getPose().getTranslation().getDistance(Constants.Simulation.HUB_CONTENTS.getCenter().getTranslation());
+        distanceToHub.set(distance);
 
         hoodAngle.set(Hood.getInstance().getAngle().in(Degrees));
         shooterVelocity.set(Shooter.getInstance().getVelocity().in(MetersPerSecond));

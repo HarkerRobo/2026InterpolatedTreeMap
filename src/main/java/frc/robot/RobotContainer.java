@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
@@ -18,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AimAndShoot;
 import frc.robot.commands.SetHoodAngle;
-import frc.robot.commands.ShootFuel;
 import frc.robot.commands.SwerveManual;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hood;
@@ -51,12 +51,22 @@ public class RobotContainer
     {
         Drivetrain.getInstance().setDefaultCommand(new SwerveManual());
         configureBindings();
+
+        for (double[] point : Constants.ShotMap.POINTS)
+        {
+            double distance = point[0];
+            LinearVelocity speed = MetersPerSecond.of(point[1]);
+            Angle angle = Degrees.of(point[2]);
+
+            shotMap.put(distance, new Pair<>(speed, angle));
+        }
+
+        shotMapEntries = Constants.ShotMap.POINTS.length;
     }
 
     private void configureBindings() 
     {
-        driver.button(3).onTrue(new ShootFuel());
-        driver.button(4).onTrue(new AimAndShoot());
+        driver.button(1).onTrue(new AimAndShoot());
     }
 
 
