@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
@@ -50,6 +51,17 @@ public class RobotContainer
     {
         Drivetrain.getInstance().setDefaultCommand(new SwerveManual());
         configureBindings();
+
+        for (double[] point : Constants.ShotMap.POINTS)
+        {
+            double distance = point[0];
+            LinearVelocity speed = MetersPerSecond.of(point[1]);
+            Angle angle = Degrees.of(point[2]);
+
+            shotMap.put(distance, new Pair<>(speed, angle));
+        }
+
+        shotMapEntries = Constants.ShotMap.POINTS.length;
     }
 
     private void configureBindings() 

@@ -39,9 +39,6 @@ public class SimulationController
     private int fuelsScored = 0;
     private int fuelsMissed = 0;
 
-    private double shotDistance;
-    private double shotSpeed;
-    private double shotAngleRotations;
 
     private double lastTime;
 
@@ -90,12 +87,6 @@ public class SimulationController
         velocityZ = shotVelocity * Math.sin(pitch);
 
         System.out.printf("Velocity: (%f;%f;%f)", velocityX, velocityY, velocityZ);
-
-        Translation2d hubCenter = Constants.Simulation.HUB_CONTENTS.getCenter().getTranslation();
-
-        shotDistance = drivetrainPose.getTranslation().getDistance(hubCenter);
-        shotSpeed = shotVelocity;
-        shotAngleRotations = Hood.getInstance().getAngle().in(Rotations);
     }
 
     public void periodic()
@@ -114,9 +105,6 @@ public class SimulationController
                 if (Math.abs(positionZ - Constants.Simulation.HUB_INTAKE_HEIGHT) < Constants.Simulation.FUEL_DIAMETER / 2.0) // fuel lands in the hub
                 {
                     fuelsScored += 1;
-
-                    RobotContainer.getInstance().shotMap.put(shotDistance, new Pair<>(MetersPerSecond.of(shotSpeed), Rotations.of(shotAngleRotations)));
-                    RobotContainer.getInstance().shotMapEntries += 1;
                 }
                 else // fuel undershoots and hits the hub
                 {
