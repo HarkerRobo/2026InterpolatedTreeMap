@@ -17,15 +17,6 @@ import edu.wpi.first.units.measure.LinearVelocity;
 
 public class Constants 
 {
-
-    public static class ShotMap
-{
-    // distance (m), speed (m/s), angle (deg) 
-    public static final double[][] POINTS = {
-        {3.040644, 3.1, 70},
-        {1.354866, 2.5, 75},
-    };
-}
     public static class Drivetrain
     {
         public static final Pose2d ZERO_POSITION = new Pose2d(new Translation2d(0.5, 0.5), new Rotation2d());
@@ -84,13 +75,6 @@ public class Constants
 
     public static class AutoAim
     {
-    public static final double YAW_TOLERANCE_ROTATIONS = 0.01; // ~3.6 degrees
-    public static final double YAW_KP = 4.0;
+
     }       
-
-    public static final double MAX_DRIVE_VOLTAGE = 2.0;
-    public static final double MAX_ROTATE_VOLTAGE = 1.0;
-    public static final double DEADBAND = 0.1;
-
-    public static final boolean DATA_COLLECTION_MODE = false; //CHANGE THIS ONE!!!!!!!!!!
 }

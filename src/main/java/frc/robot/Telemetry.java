@@ -40,31 +40,16 @@ public class Telemetry
     private static IntegerPublisher fuelsScored = telemetryTable.getIntegerTopic("Fuels Scored").publish();
     private static IntegerPublisher fuelsMissed = telemetryTable.getIntegerTopic("Fuels Missed").publish();
 
-    private static NetworkTable manualTable = telemetryTable.getSubTable("Manual Shot");
-    private static NetworkTableEntry manualSpeedEntry = manualTable.getEntry("Speed (m per s)");
-    private static NetworkTableEntry manualAngleEntry = manualTable.getEntry("Angle (deg)");
 
     public static void init()
     {
-        manualSpeedEntry.setDefaultDouble(Constants.Shooter.INITIAL_SPEED.in(MetersPerSecond));
-        manualAngleEntry.setDefaultDouble(Constants.Hood.INITIAL_ANGLE.in(Degrees));
     }
 
     public static NetworkTable getTable() 
     {
         return telemetryTable;
     }
-
-    public static LinearVelocity getManualSpeedValue()
-    {
-        return MetersPerSecond.of(manualSpeedEntry.getDouble(Constants.Shooter.INITIAL_SPEED.in(MetersPerSecond)));
-    }
-
-    public static Angle getManualAngleValue()
-    {
-        return Degrees.of(manualAngleEntry.getDouble(Constants.Hood.INITIAL_ANGLE.in(Degrees)));
-    }
-
+    
     public static void update() 
     {
         pose.set(Drivetrain.getInstance().getPose());
